@@ -36,7 +36,11 @@ async function fetchWeatherData(locationInput: location): Promise<location|null>
   try {
     const url: string = `${config.API_ENDPOINT}?key=${config.API_KEY}&format=json&num_of_days=0&q=${locationInput.postal_code}&extra=localObsTime`;
     const { data } = await axios.get(url);
-    return { ...locationInput, weather: data.data.current_condition[0].weatherDesc[0].value, current_time: data.data.current_condition[0].localObsDateTime };
+    if (data.data.error !== 'undefined') {
+      return { ...locationInput, weather: data.data.current_condition[0].weatherDesc[0].value, current_time: data.data.current_condition[0].localObsDateTime };
+    }
+    
+    return null;
   } catch (e) {
     return null;
   }
