@@ -25,7 +25,9 @@ let inputData: Array<location> = [
 for (const input of inputData) {
   (async () => {
     const response: location | null = await fetchWeatherData(input);
-    console.log(response);
+    if (response !== null) {
+      console.log(response);
+    }
   })();
 }
 
