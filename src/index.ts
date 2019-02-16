@@ -1,13 +1,6 @@
 import config from './config';
 import axios from 'axios';
 
-interface location {
-  location_name: string,
-  postal_code: string | number,
-  weather?: string,
-  current_time?: string
-}
-
 // sample dataset
 let inputData: Array<location> = [
   { location_name: 'Los Angeles', postal_code: '90001' },
@@ -22,17 +15,14 @@ let inputData: Array<location> = [
   { location_name: 'Beaver', postal_code: '25813' },
 ];
 
-for (const input of inputData) {
-  (async () => {
-    const response: location | null = await fetchWeatherData(input);
-    if (response !== null) {
-      console.log(response);
-    }
-  })();
+interface location {
+  location_name: string,
+  postal_code: string | number,
+  weather?: string,
+  current_time?: string
 }
 
-
-async function fetchWeatherData(locationInput: location): Promise<location|null> {
+const fetchWeatherData = async (locationInput: location) : Promise<location|null> => {
   try {
     const url: string = `${config.API_ENDPOINT}?key=${config.API_KEY}&format=json&num_of_days=0&q=${locationInput.postal_code}&extra=localObsTime`;
     const { status, data } = await axios.get(url);
@@ -44,4 +34,13 @@ async function fetchWeatherData(locationInput: location): Promise<location|null>
   } catch (e) {
     return null;
   }
+}
+
+for (const input of inputData) {
+  (async () => {
+    const response: location | null = await fetchWeatherData(input);
+    if (response !== null) {
+      console.log(response);
+    }
+  })();
 }
