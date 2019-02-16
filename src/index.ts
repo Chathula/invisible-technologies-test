@@ -1,5 +1,5 @@
-import config from './config';
-import axios from 'axios';
+import config from './config'
+import axios from 'axios'
 
 // sample dataset
 let inputData: Array<location> = [
@@ -13,7 +13,7 @@ let inputData: Array<location> = [
   { location_name: 'Killington', postal_code: '05751' },
   { location_name: 'Altavista', postal_code: '24517' },
   { location_name: 'Beaver', postal_code: '25813' },
-];
+]
 
 interface location {
   location_name: string,
@@ -22,25 +22,26 @@ interface location {
   current_time?: string
 }
 
+const generateUrl = (postalCode: string | number): string => `${config.API_ENDPOINT}?key=${config.API_KEY}&format=json&num_of_days=0&q=${postalCode}&extra=localObsTime`
+
 const fetchWeatherData = async (locationInput: location) : Promise<location|null> => {
   try {
-    const url: string = `${config.API_ENDPOINT}?key=${config.API_KEY}&format=json&num_of_days=0&q=${locationInput.postal_code}&extra=localObsTime`;
-    const { status, data } = await axios.get(url);
+    const { status, data } = await axios.get(generateUrl(locationInput.postal_code))
     if (status === 200 && data.data.error !== 'undefined') {
-      return { ...locationInput, weather: data.data.current_condition[0].weatherDesc[0].value, current_time: data.data.current_condition[0].localObsDateTime };
+      return { ...locationInput, weather: data.data.current_condition[0].weatherDesc[0].value, current_time: data.data.current_condition[0].localObsDateTime }
     }
     
-    return null;
+    return null
   } catch (e) {
-    return null;
+    return null
   }
 }
 
 for (const input of inputData) {
   (async () => {
-    const response: location | null = await fetchWeatherData(input);
+    const response: location | null = await fetchWeatherData(input)
     if (response !== null) {
-      console.log(response);
+      console.log(response)
     }
-  })();
+  })()
 }
